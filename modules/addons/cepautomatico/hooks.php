@@ -4,12 +4,10 @@ if (!defined("WHMCS")) {
     die("This file cannot be accessed directly");
 }
 
-
 add_hook("ClientAreaFooterOutput", 1, function ($vars) {
 
-
     if ($vars["filename"] == "register" || $vars["filename"] == "cart") {
-        require_once 'version.php';
+        require_once ('version.php');
 
         $javascript = "
 <script>

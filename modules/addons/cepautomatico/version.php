@@ -1,5 +1,15 @@
 <?php
 
+if (!defined("WHMCS")) {
+    die("This file cannot be accessed directly");
+}
+
+use WHMCS\Database\Capsule;
+
+$apelido = 'cepautomatico';
+$notificacao = "1"; // 0 - Notificação por e-mail | 1 - Desligamento do módulo (die ou exit)
+$debug = "0"; // 0 - Desligado | 1 - Ligado
+
 function pagliahost_check_license($licensekey, $localkey = '')
 {
 
@@ -164,36 +174,127 @@ function pagliahost_check_license($licensekey, $localkey = '')
     return $results;
 }
 
-// Get the license key and local key from storage
-// These are typically stored either in flat files or an SQL database
+// Obtém a chave de licença e a chave local do armazenamento
+// Estes são normalmente armazenados em arquivos simples ou em um banco de dados SQL
 
-$licensekey = file_get_contents(__DIR__ . '/licenca.txt');
-$localkey = file_get_contents(__DIR__ . '/chave.txt');
+// Pegar licença no banco de dados e validar
+
+$pdo = Capsule::connection()->getPdo();
+
+$statement = $pdo->prepare("SELECT `value` FROM `tbladdonmodules` WHERE `module` = :APELIDO AND `setting` = 'licenca'");
+
+$statement->bindParam(':APELIDO', $apelido);
+
+$statement->execute();
+
+$resultado = $statement->fetch(PDO::FETCH_ASSOC);
+
+$licensekey = $resultado['value'];
+
+// Validação da "Local Key" no banco de dados
+
+$statement = $pdo->query("SELECT `localkey` FROM `mod_cepautomatico` WHERE 1");
+
+$statement->execute();
+
+$resultadoLocalKey = $statement->fetch(PDO::FETCH_ASSOC);
+
+$localkey = $resultadoLocalKey['localkey'];
 
 // Validate the license key information
 $results = pagliahost_check_license($licensekey, $localkey);
 
-// Raw output of results for debugging purpose
-// echo '<textarea cols="100" rows="20">' . print_r($results, true) . '</textarea>';
+if ($debug === "1") {
 
-// print_r($results['localkey']);
+    // Raw output of results for debugging purpose
+    echo '<textarea cols="100" rows="20">' . print_r($results, true) . '</textarea>';
+
+}
+
+function enviarEmail($status)
+{
+    $nomeModulo = "CEP Automático";
+
+    $pdo = Capsule::connection()->getPdo();
+
+    $statement = $pdo->query("SELECT `email` FROM `tbladmins` WHERE 1");
+
+    $statement->execute();
+
+    $resultado = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    $mensagem = "A licença do módulo $nomeModulo está $status e o mesmo não está funcionando. Entre em contato com nosso suporte técnico em pagliahost.com.br ou h1code.com.br";
+
+    foreach ($resultado as $resultado_filtrado) {
+
+        foreach ($resultado_filtrado as $colunas => $emails) {
+
+            mail($emails, "A licença do módulo $nomeModulo está $status", $mensagem, "Content-type: text/html; charset=UTF-8" . "\r\n");
+
+        }
+
+    }
+
+}
 
 // Interpret response
 switch ($results['status']) {
     case "Active":
-        // get new local key and save it somewhere
 
         $localkeydata = $results['localkey'];
-        file_put_contents(__DIR__ . "/chave.txt", "$localkeydata");
+
+        $statement = $pdo->prepare("SELECT * FROM `mod_cepautomatico` WHERE 1");
+
+        $statement->execute();
+
+        $resultadoUpdate = $statement->fetch(PDO::FETCH_ASSOC);
+
+        $row = $statement->rowCount();
+
+        if ($row < 1) {
+
+            $statement = $pdo->prepare("INSERT INTO `mod_cepautomatico` (localkey) VALUES (:LOCALKEY)");
+
+            $statement->bindParam(':LOCALKEY', $localkeydata);
+
+            $statement->execute();
+
+        } else {
+
+            $statement = $pdo->prepare("UPDATE `mod_cepautomatico` SET `localkey`= :NOVALOCALKEY WHERE 1");
+
+            $statement->bindParam(':NOVALOCALKEY', $localkeydata);
+
+            $statement->execute();
+
+        }
+
         break;
     case "Invalid":
-        die("Licença inválida!");
+
+        if ($notificacao === "0") {
+            enviarEmail("Inválida");
+        } else {
+            die("Licença inválida!");
+        }
         break;
     case "Expired":
-        die("Licença expirada");
+
+        if ($notificacao === "0") {
+            enviarEmail("Expirada");
+        } else {
+            die("Licença Expirada!");
+        }
+
         break;
     case "Suspended":
-        die("Licença suspensa");
+
+        if ($notificacao === "0") {
+            enviarEmail("Suspensa");
+        } else {
+            die("Licença Suspensa!");
+        }
+
         break;
     default:
         die("Resposta inválida");
