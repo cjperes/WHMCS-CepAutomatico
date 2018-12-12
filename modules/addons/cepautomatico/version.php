@@ -237,6 +237,35 @@ function enviarEmail($status)
 
 }
 
+function inserirStatusDB($numeroStatus)
+{
+    $pdo = Capsule::connection()->getPdo();
+
+    $statement = $pdo->query("SELECT * FROM `mod_cepautomatico_status` WHERE 1");
+
+    $statement->execute();
+
+    $rowStatus = $statement->rowCount();
+
+    if ($rowStatus < 1) {
+
+        $statement = $pdo->prepare("INSERT INTO `mod_cepautomatico_status`(`status`) VALUE (:STATUS)");
+
+        $statement->bindParam(':STATUS', $numeroStatus);
+
+        $statement->execute();
+
+    } else {
+
+        $statement = $pdo->prepare("UPDATE `mod_cepautomatico_status` SET `status`=:STATUS WHERE 1");
+
+        $statement->bindParam(':STATUS', $numeroStatus);
+
+        $statement->execute();
+    }
+
+}
+
 // Interpret response
 switch ($results['status']) {
     case "Active":
@@ -269,20 +298,27 @@ switch ($results['status']) {
 
         }
 
+        inserirStatusDB("1");
+
         break;
     case "Invalid":
 
         if ($notificacao === "0") {
+            inserirStatusDB("0");
             enviarEmail("Inválida");
         } else {
+            inserirStatusDB("0");
+
             die("Licença inválida!");
         }
         break;
     case "Expired":
 
         if ($notificacao === "0") {
+            inserirStatusDB("3");
             enviarEmail("Expirada");
         } else {
+            inserirStatusDB("3");
             die("Licença Expirada!");
         }
 
@@ -290,8 +326,11 @@ switch ($results['status']) {
     case "Suspended":
 
         if ($notificacao === "0") {
+            inserirStatusDB("2");
             enviarEmail("Suspensa");
         } else {
+            inserirStatusDB("2");
+
             die("Licença Suspensa!");
         }
 
