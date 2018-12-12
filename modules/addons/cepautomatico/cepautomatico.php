@@ -18,6 +18,8 @@ function cepautomatico_config()
 
         $statement->execute();
 
+        $resultado = $statement->execute();
+
         $resultado = $statement->fetch(PDO::FETCH_ASSOC);
 
         $status = $resultado['status'];
@@ -51,7 +53,7 @@ function cepautomatico_config()
         }
 
     } catch (\Exception $e) {
-        echo "Uh oh! {$e->getMessage()}";
+        // echo "Uh oh! {$e->getMessage()}";
     }
 
     return array(
@@ -70,7 +72,8 @@ function cepautomatico_config()
 
             "licensestatus" => array(
                 'FriendlyName' => "Status da Licença",
-                'Description' => "<span class='label label-" . $resultado['status'] . "'>&nbsp;" . $statusMensagem . "&nbsp;</span>"),
+                'Description' => "<span class='label label-" . $resultado['status'] . "'>&nbsp;" . $statusMensagem . "&nbsp;</span>",
+            ),
         ),
     );
 
@@ -83,11 +86,11 @@ function cepautomatico_activate()
     $pdo->beginTransaction();
 
     try {
-        $statement = $pdo->prepare("CREATE TABLE IF NOT EXISTS `mod_cepautomatico` ( `localkey` TEXT NOT NULL ) ENGINE = MyISAM;");
+        $statement = $pdo->prepare("CREATE TABLE IF NOT EXISTS `mod_cepautomatico` ( `localkey` TEXT NOT NULL ) ENGINE = InnoDB;");
 
         $statement->execute();
 
-        $statement = $pdo->prepare("CREATE TABLE IF NOT EXISTS `mod_cepautomatico_status` ( `status` TINYINT NOT NULL ) ENGINE = MyISAM;");
+        $statement = $pdo->prepare("CREATE TABLE IF NOT EXISTS `mod_cepautomatico_status` ( `status` TINYINT NOT NULL ) ENGINE = InnoDB;");
 
         $statement->execute();
 
