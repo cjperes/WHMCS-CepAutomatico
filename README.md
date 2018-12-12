@@ -9,9 +9,9 @@
 
 - Extraia a pasta "cepautomatico" para dentro de /whmcs/modules/addons/
 
-- Em seguida, vá até WHMCS > Opções > Módulos Addon, localize o módulo "CEP Automático" e em seguida clique em "Ativar"
+- Vá até WHMCS > Opções > Módulos Addon, localize o módulo "CEP Automático" e em seguida clique em "Ativar"
 
-- Na sequencia, clique em "Configurações" e insira sua chave de licença fornecida no ato da contratação, selecione a opção "Full Administrator" e logo após "Salvar Alterações"
+- Clique em "Configurações" e insira sua chave de licença fornecida no ato da contratação, selecione a opção "Full Administrator" e logo após "Salvar Alterações"
 
 Teste a aplicação em "https://seuwhmcs/register.php"
 
