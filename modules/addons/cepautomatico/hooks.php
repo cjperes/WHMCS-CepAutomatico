@@ -10,35 +10,87 @@ add_hook("ClientAreaFooterOutput", 1, function ($vars) {
         require_once ('version.php');
 
         $javascript = "
-<script>
-$(document).ready(function(){
-    if($('#inputCountry').val() == 'BR'){
-        var campos = ['inputAddress1','inputAddress2','inputCity','stateinput','stateselect'];
-        for(i = 0; i < campos.length; i++){
-			$('#'+campos[i]).css('display', 'none');
-            $('#'+campos[i]).prev().css('display', 'none');
+<script type='text/javascript'>
+        $(document).ready(function () {
+
+            if($('#inputCountry, #country').val() == 'BR'){
+                $('#inputAddress1, label[for=inputAddress1], .fa-building-o, #address1, label[for=address1]').hide();
+                $('#inputAddress2, label[for=inputAddress2], .fa-map-marker, #address2, label[for=address2]').hide();
+                $('#inputCity, label[for=inputCity], .fa-building-o, #city, label[for=city]').hide();
+                $('#stateselect, label[for=inputState], .fa-map-signs, label[for=state]').hide();
         }
-        $('#inputPostcode').change(function(event){
-                $.get('//ddd.pricez.com.br/cep/'+$('#inputPostcode').val()+'.json', function(data) {
-        			data.payload.logradouro != null ? $('#'+campos[0]).val(data.payload.logradouro) : $('#'+campos[0]).addClass('cep-erro');
-        			data.payload.bairro != null ? $('#'+campos[1]).val(data.payload.bairro) : $('#'+campos[1]).addClass('cep-erro');
-        			data.payload.cidade != null ? $('#'+campos[2]).val(data.payload.cidade) : $('#'+campos[2]).addClass('cep-erro');
-        			data.payload.estado != null ? $('#'+campos[4]).val(data.payload.estado) : $('#'+campos[3]).addClass('cep-erro');
-        			if(data.payload.estado != null){
-                        for(i = 0; i < campos.length; i++){
-                            if(campos[i] != 'stateinput'){
-								$('#'+campos[i]).css('display', 'block');
-								$('.field-icon').css('display', 'block');
-							}
-                        }
-        			}
-        		}).fail(function() {
-        			alert('Ocorreu um erro ao buscar seu CEP. Tente novamente.');
-        		});
+
+            // $('label[for=address]').hide();
+
+            function limpa_formulário_cep() {
+                // Limpa valores do formulário de cep.
+                $('#inputAddress1').val('');
+                $('#inputAddress2').val('');
+                $('#inputCity').val('');
+                $('#stateselect').val('');
+
+                $('#inputAddress1, label[for=inputAddress1], .fa-building-o, #address1, label[for=address1]').hide();
+                $('#inputAddress2, label[for=inputAddress2], .fa-map-marker, #address2, label[for=address2]').hide();
+                $('#inputCity, label[for=inputCity], .fa-building-o, #city, label[for=city]').hide();
+                $('#stateselect, label[for=inputState], .fa-map-signs, label[for=state]').hide();
+            }
+
+            //Quando o campo cep perde o foco.
+            $('#inputPostcode, #postcode').blur(function () {
+
+                //Nova variável 'cep' somente com dígitos.
+                var cep = $(this).val().replace(/\D/g, '');
+
+                //Verifica se campo cep possui valor informado.
+                if (cep != '') {
+
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+
+                    //Valida o formato do CEP.
+                    if (validacep.test(cep)) {
+
+                        //Preenche os campos com '...' enquanto consulta webservice.
+                        $('#address1').val('...');
+                        $('#inputAddress2, #address2').val('...');
+                        $('#inputCity, #city').val('...');
+                        $('#stateselect').val('...');
+
+                        //Consulta o webservice viacep.com.br/
+                        $.getJSON('https://viacep.com.br/ws/' + cep + '/json/?callback=?', function (dados) {
+
+                            if (!('erro' in dados)) {
+                                //Atualiza os campos com os valores da consulta.
+                                $('#inputAddress1, #address1').val(dados.logradouro);
+                                $('#inputAddress2, #address2').val(dados.bairro);
+                                $('#inputCity, #city').val(dados.localidade);
+                                $('#stateselect').val(dados.uf);
+
+                                $('#inputAddress1, label[for=inputAddress1], .fa-building-o, #address1, label[for=address1]').show();
+                                $('#inputAddress2, label[for=inputAddress2], .fa-map-marker, #address2, label[for=address2]').show();
+                                $('#inputCity, label[for=inputCity], .fa-building-o, #city, label[for=city]').show();
+                                $('#stateselect, label[for=inputState], .fa-map-signs, label[for=state]').show();
+                            } //end if.
+                            else {
+                                //CEP pesquisado não foi encontrado.
+                                limpa_formulário_cep();
+                                alert('CEP não encontrado.');
+                            }
+                        });
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpa_formulário_cep();
+                        alert('Formato de CEP inválido.');
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpa_formulário_cep();
+                }
+            });
         });
-    }
-});
-</script>";
+    </script>";
 
         return $javascript;
     }

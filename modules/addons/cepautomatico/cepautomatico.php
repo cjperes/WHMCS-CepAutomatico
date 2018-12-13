@@ -19,7 +19,7 @@ function cepautomatico_config()
         $statement->execute();
 
         $resultado = $statement->execute();
-
+        
         $resultado = $statement->fetch(PDO::FETCH_ASSOC);
 
         $status = $resultado['status'];
@@ -60,7 +60,7 @@ function cepautomatico_config()
         'name' => 'CEP Automático', // Display name for your module
         'description' => 'Módulo de CEP Automático na realização de novos cadastros.', // Description displayed within the admin interface
         'author' => "<a href='https://h1code.com.br' target='_blank'><img src='https://i.imgur.com/2NmHjxv.png' height='50'/></a>", // Module author name
-        'version' => '1.0', // Version number
+        'version' => '1.1', // Version number
         'fields' => array(
             // a text field type allows for single line text input
             'licenca' => array(
@@ -72,7 +72,7 @@ function cepautomatico_config()
 
             "licensestatus" => array(
                 'FriendlyName' => "Status da Licença",
-                'Description' => "<span class='label label-" . $resultado['status'] . "'>&nbsp;" . $statusMensagem . "&nbsp;</span>",
+                'Description' => "<span class='label label-" . $resultado['status'] . "'>&nbsp;" . $statusMensagem . "&nbsp;</span>"
             ),
         ),
     );

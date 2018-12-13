@@ -1,8 +1,8 @@
 ## REQUISITOS MÍNIMOS
 
-- Versão do WHMCS: >= 7.0
+- Versão do WHMCS: >= 6.x
 - Versão do PHP: >= 5.6
-- IonCube Loader: >= 10.0
+- IonCube Loader: >= 10.x
 
 
 ## INSTALAÇÃO
