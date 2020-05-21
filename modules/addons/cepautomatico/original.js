@@ -1,11 +1,13 @@
-$(document).ready(function () {
-    if ($('#inputCountry, #country').val() == 'BR') {
-        $('#inputAddress1, label[for=inputAddress1], .fa-building-o, #address1, label[for=address1]').hide();
-        $('#inputAddress2, label[for=inputAddress2], .fa-map-marker, #address2, label[for=address2]').hide();
-        $('#inputCity, label[for=inputCity], .fa-building-o, #city, label[for=city]').hide();
-        $('#stateselect, label[for=inputState], .fa-map-signs, label[for=state]').hide();
-    }
-    // $('label[for=address]').hide();
+$(document).ready(function() {
+
+    $('#inputAddress1, label[for=inputAddress1], .fa-building-o, #address1, label[for=address1]').hide();
+    $('#inputAddress2, label[for=inputAddress2], .fa-map-marker, #address2, label[for=address2]').hide();
+    $('#inputCity, label[for=inputCity], .fa-building-o, #city, label[for=city]').hide();
+    $('#stateselect, label[for=inputState], .fa-map-signs, label[for=state]').hide();
+
+    //Validação do campo CEP
+    $('#inputPostcode').mask('00000-000');
+
     function limpa_formulário_cep() {
         // Limpa valores do formulário de cep.
         $('#inputAddress1').val('');
@@ -18,7 +20,7 @@ $(document).ready(function () {
         $('#stateselect, label[for=inputState], .fa-map-signs, label[for=state]').hide();
     }
     //Quando o campo cep perde o foco.
-    $('#inputPostcode, #postcode').blur(function () {
+    $('#inputPostcode, #postcode').blur(function() {
         //Nova variável 'cep' somente com dígitos.
         var cep = $(this).val().replace(/\D/g, '');
         //Verifica se campo cep possui valor informado.
@@ -33,7 +35,7 @@ $(document).ready(function () {
                 $('#inputCity, #city').val('...');
                 $('#stateselect').val('...');
                 //Consulta o webservice viacep.com.br/
-                $.getJSON('https://viacep.com.br/ws/' + cep + '/json/?callback=?', function (dados) {
+                $.getJSON('https://viacep.com.br/ws/' + cep + '/json/?callback=?', function(dados) {
                     if (!('erro' in dados)) {
                         //Atualiza os campos com os valores da consulta.
                         $('#inputAddress1, #address1').val(dados.logradouro);

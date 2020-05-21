@@ -18,7 +18,7 @@ function pagliahost_check_license($licensekey, $localkey = '')
     // -----------------------------------
 
     // Enter the url to your WHMCS installation here
-    $whmcsurl = 'https://pagliahost.com.br/cliente/';
+    $whmcsurl = 'https://pagliahost.com.br/central/';
     // Must match what is specified in the MD5 Hash Verification field
     // of the licensing product that will be used with this check.
     $licensing_secret_key = 'b4f5ce5f15ee985e946e2836c0e2c150';
@@ -309,7 +309,7 @@ switch ($results['status']) {
         } else {
             inserirStatusDB("0");
 
-            die("Licença inválida!");
+            die("A licença do módulo 'CEP Automático' está 'Invalida', desative-o ou entre em contato com o desenvolvedor!");
         }
         break;
     case "Expired":
@@ -319,7 +319,7 @@ switch ($results['status']) {
             enviarEmail("Expirada");
         } else {
             inserirStatusDB("3");
-            die("Licença Expirada!");
+            die("A licença do módulo 'CEP Automático' está 'Expirada', desative-o ou entre em contato com o desenvolvedor!");
         }
 
         break;
@@ -331,7 +331,7 @@ switch ($results['status']) {
         } else {
             inserirStatusDB("2");
 
-            die("Licença Suspensa!");
+            die("A licença do módulo 'CEP Automático' está 'Suspensa', desative-o ou entre em contato com o desenvolvedor!");
         }
 
         break;
