@@ -60,7 +60,7 @@ function cepautomatico_config()
         'name' => 'CEP Automático', // Display name for your module
         'description' => 'Módulo de CEP Automático nos formulários de cadastro.', // Description displayed within the admin interface
         'author' => "<a href='https://h1code.com.br' target='_blank'><img src='https://i.imgur.com/2NmHjxv.png' height='50'/></a>", // Module author name
-        'version' => '1.2', // Version number
+        'version' => '1.3', // Version number
         'fields' => array(
             // a text field type allows for single line text input
             'licenca' => array(
