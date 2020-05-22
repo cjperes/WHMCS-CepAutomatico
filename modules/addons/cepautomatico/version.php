@@ -10,7 +10,7 @@ $apelido = 'cepautomatico';
 $notificacao = "1"; // 0 - Notificação por e-mail | 1 - Desligamento do módulo (die ou exit)
 $debug = "0"; // 0 - Desligado | 1 - Ligado
 
-function pagliahost_check_license($licensekey, $localkey = '')
+function cepautomatico_check_license($licensekey, $localkey = '')
 {
 
     // -----------------------------------
@@ -202,7 +202,7 @@ $resultadoLocalKey = $statement->fetch(PDO::FETCH_ASSOC);
 $localkey = $resultadoLocalKey['localkey'];
 
 // Validate the license key information
-$results = pagliahost_check_license($licensekey, $localkey);
+$results = cepautomatico_check_license($licensekey, $localkey);
 
 if ($debug === "1") {
 
@@ -237,7 +237,7 @@ function enviarEmail($status)
 
 }
 
-function inserirStatusDB($numeroStatus)
+function inserirStatusDB_cepautomatico($numeroStatus)
 {
     $pdo = Capsule::connection()->getPdo();
 
@@ -298,16 +298,16 @@ switch ($results['status']) {
 
         }
 
-        inserirStatusDB("1");
+        inserirStatusDB_cepautomatico("1");
 
         break;
     case "Invalid":
 
         if ($notificacao === "0") {
-            inserirStatusDB("0");
+            inserirStatusDB_cepautomatico("0");
             enviarEmail("Inválida");
         } else {
-            inserirStatusDB("0");
+            inserirStatusDB_cepautomatico("0");
 
             die("A licença do módulo 'CEP Automático' está 'Invalida', desative-o ou entre em contato com o desenvolvedor!");
         }
@@ -315,10 +315,10 @@ switch ($results['status']) {
     case "Expired":
 
         if ($notificacao === "0") {
-            inserirStatusDB("3");
+            inserirStatusDB_cepautomatico("3");
             enviarEmail("Expirada");
         } else {
-            inserirStatusDB("3");
+            inserirStatusDB_cepautomatico("3");
             die("A licença do módulo 'CEP Automático' está 'Expirada', desative-o ou entre em contato com o desenvolvedor!");
         }
 
@@ -326,10 +326,10 @@ switch ($results['status']) {
     case "Suspended":
 
         if ($notificacao === "0") {
-            inserirStatusDB("2");
+            inserirStatusDB_cepautomatico("2");
             enviarEmail("Suspensa");
         } else {
-            inserirStatusDB("2");
+            inserirStatusDB_cepautomatico("2");
 
             die("A licença do módulo 'CEP Automático' está 'Suspensa', desative-o ou entre em contato com o desenvolvedor!");
         }
