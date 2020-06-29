@@ -120,7 +120,8 @@ function cepautomatico_check_license($licensekey, $localkey = '')
                 while (!@feof($fp) && $status) {
                     $line = @fgets($fp, 1024);
                     $patternMatches = array();
-                    if (!$responseCode
+                    if (
+                        !$responseCode
                         && preg_match($responseCodePattern, trim($line), $patternMatches)
                     ) {
                         $responseCode = (empty($patternMatches[1])) ? 0 : $patternMatches[1];
@@ -158,6 +159,7 @@ function cepautomatico_check_license($licensekey, $localkey = '')
                 return $results;
             }
         }
+
         if ($results['status'] == "Active") {
             $results['checkdate'] = $checkdate;
             $data_encoded = serialize($results);
@@ -170,6 +172,7 @@ function cepautomatico_check_license($licensekey, $localkey = '')
         }
         $results['remotecheck'] = true;
     }
+
     unset($postfields, $data, $matches, $whmcsurl, $licensing_secret_key, $checkdate, $usersip, $localkeydays, $allowcheckfaildays, $md5hash);
     return $results;
 }
@@ -179,27 +182,14 @@ function cepautomatico_check_license($licensekey, $localkey = '')
 
 // Pegar licença no banco de dados e validar
 
-$pdo = Capsule::connection()->getPdo();
-
-$statement = $pdo->prepare("SELECT `value` FROM `tbladdonmodules` WHERE `module` = :APELIDO AND `setting` = 'licenca'");
-
-$statement->bindParam(':APELIDO', $apelido);
-
-$statement->execute();
-
-$resultado = $statement->fetch(PDO::FETCH_ASSOC);
-
-$licensekey = $resultado['value'];
+$licensekey = Capsule::table('tbladdonmodules')->select('value')->where('module', $apelido)->where('setting', 'licenca')->first()->value;
 
 // Validação da "Local Key" no banco de dados
 
-$statement = $pdo->query("SELECT `localkey` FROM `mod_cepautomatico` WHERE 1");
+$resultadoLocalKey = Capsule::table('mod_cepautomatico')->select('localkey')->first()->localkey;
 
-$statement->execute();
+$localkey = $resultadoLocalKey;
 
-$resultadoLocalKey = $statement->fetch(PDO::FETCH_ASSOC);
-
-$localkey = $resultadoLocalKey['localkey'];
 
 // Validate the license key information
 $results = cepautomatico_check_license($licensekey, $localkey);
@@ -208,20 +198,13 @@ if ($debug === "1") {
 
     // Raw output of results for debugging purpose
     echo '<textarea cols="100" rows="20">' . print_r($results, true) . '</textarea>';
-
 }
 
 function enviarEmail($status)
 {
     $nomeModulo = "CEP Automático";
 
-    $pdo = Capsule::connection()->getPdo();
-
-    $statement = $pdo->query("SELECT `email` FROM `tbladmins` WHERE 1");
-
-    $statement->execute();
-
-    $resultado = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $resultado = Capsule::table('tbladmins')->select('email')->get();
 
     $mensagem = "A licença do módulo $nomeModulo está $status e o mesmo não está funcionando. Entre em contato com nosso suporte técnico em pagliahost.com.br ou h1code.com.br";
 
@@ -230,72 +213,51 @@ function enviarEmail($status)
         foreach ($resultado_filtrado as $colunas => $emails) {
 
             mail($emails, "A licença do módulo $nomeModulo está $status", $mensagem, "Content-type: text/html; charset=UTF-8" . "\r\n");
-
         }
-
     }
-
 }
 
 function inserirStatusDB_cepautomatico($numeroStatus)
 {
-    $pdo = Capsule::connection()->getPdo();
 
-    $statement = $pdo->query("SELECT * FROM `mod_cepautomatico_status` WHERE 1");
-
-    $statement->execute();
-
-    $rowStatus = $statement->rowCount();
+    $rowStatus = count(Capsule::table('mod_cepautomatico_status')->get());
 
     if ($rowStatus < 1) {
-
-        $statement = $pdo->prepare("INSERT INTO `mod_cepautomatico_status`(`status`) VALUE (:STATUS)");
-
-        $statement->bindParam(':STATUS', $numeroStatus);
-
-        $statement->execute();
-
+        Capsule::table('mod_cepautomatico_status')->insert([
+            'status' => $numeroStatus
+        ]);
     } else {
-
-        $statement = $pdo->prepare("UPDATE `mod_cepautomatico_status` SET `status`=:STATUS WHERE 1");
-
-        $statement->bindParam(':STATUS', $numeroStatus);
-
-        $statement->execute();
+        Capsule::table('mod_cepautomatico_status')->whereRaw(1)
+            ->update([
+                'status' => $numeroStatus
+            ]);
     }
-
 }
 
+function updateOrCreaateModule($localkeydata, $update = false)
+{
+    if ($update) {
+        Capsule::table('mod_cepautomatico')->whereRaw(1)
+            ->update([
+                'localkey' => $localkeydata
+            ]);
+    } else {
+        Capsule::table('mod_cepautomatico')
+            ->insert([
+                'localkey' => $localkeydata
+            ]);
+    }
+}
 // Interpret response
 switch ($results['status']) {
     case "Active":
-
         $localkeydata = $results['localkey'];
-
-        $statement = $pdo->prepare("SELECT * FROM `mod_cepautomatico` WHERE 1");
-
-        $statement->execute();
-
-        $resultadoUpdate = $statement->fetch(PDO::FETCH_ASSOC);
-
-        $row = $statement->rowCount();
+        $row = count($resultadoLocalKey);
 
         if ($row < 1) {
-
-            $statement = $pdo->prepare("INSERT INTO `mod_cepautomatico` (localkey) VALUES (:LOCALKEY)");
-
-            $statement->bindParam(':LOCALKEY', $localkeydata);
-
-            $statement->execute();
-
+            updateOrCreaateModule($localkeydata);
         } else {
-
-            $statement = $pdo->prepare("UPDATE `mod_cepautomatico` SET `localkey`= :NOVALOCALKEY WHERE 1");
-
-            $statement->bindParam(':NOVALOCALKEY', $localkeydata);
-
-            $statement->execute();
-
+            updateOrCreaateModule($localkeydata, true);
         }
 
         inserirStatusDB_cepautomatico("1");
