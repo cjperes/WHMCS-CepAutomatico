@@ -18,7 +18,7 @@ function cepautomatico_check_license($licensekey, $localkey = '')
     // -----------------------------------
 
     // Enter the url to your WHMCS installation here
-    $whmcsurl = 'https://pagliahost.com.br/central/';
+    $whmcsurl = 'https://pagliahost.com.br/cliente/';
     // Must match what is specified in the MD5 Hash Verification field
     // of the licensing product that will be used with this check.
     $licensing_secret_key = 'b4f5ce5f15ee985e946e2836c0e2c150';
