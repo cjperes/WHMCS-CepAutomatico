@@ -18,7 +18,7 @@ function cepautomatico_check_license($licensekey, $localkey = '')
     // -----------------------------------
 
     // Enter the url to your WHMCS installation here
-    $whmcsurl = 'https://pagliahost.com.br/cliente/';
+    $whmcsurl = 'https://h1code.com.br/cliente/';
     // Must match what is specified in the MD5 Hash Verification field
     // of the licensing product that will be used with this check.
     $licensing_secret_key = 'b4f5ce5f15ee985e946e2836c0e2c150';
@@ -206,7 +206,7 @@ function enviarEmail($status)
 
     $resultado = Capsule::table('tbladmins')->select('email')->get();
 
-    $mensagem = "A licença do módulo $nomeModulo está $status e o mesmo não está funcionando. Entre em contato com nosso suporte técnico em pagliahost.com.br ou h1code.com.br";
+    $mensagem = "A licença do módulo $nomeModulo está $status e o mesmo não está funcionando. Entre em contato com nosso suporte técnico em h1code.com.br";
 
     foreach ($resultado as $resultado_filtrado) {
 
@@ -265,13 +265,11 @@ switch ($results['status']) {
         break;
     case "Invalid":
 
-        if ($notificacao === "0") {
-            inserirStatusDB_cepautomatico("0");
-            enviarEmail("Inválida");
+        if ($results['description'] == "Remote Check Failed") {
+            inserirStatusDB_validacaocadastral("0");
         } else {
-            inserirStatusDB_cepautomatico("0");
-
-            die("A licença do módulo 'CEP Automático' está 'Invalida', desative-o ou entre em contato com o desenvolvedor!");
+            inserirStatusDB_validacaocadastral("0");
+            die("A licença do módulo 'Validação Cadastral' está 'Invalida', desative-o ou entre em contato com o desenvolvedor!");
         }
         break;
     case "Expired":
