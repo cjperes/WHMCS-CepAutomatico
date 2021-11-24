@@ -7,12 +7,78 @@ if (!defined("WHMCS")) {
 add_hook("ClientAreaFooterOutput", 1, function ($vars) {
 
     if ($vars["filename"] == "register" || $vars["filename"] == "cart") {
-        require_once ('version.php');
 
         $javascript = '
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
 <script type="text/javascript">
-        var _0x8d6e=["\x68\x69\x64\x65","\x23\x69\x6E\x70\x75\x74\x41\x64\x64\x72\x65\x73\x73\x31\x2C\x20\x6C\x61\x62\x65\x6C\x5B\x66\x6F\x72\x3D\x69\x6E\x70\x75\x74\x41\x64\x64\x72\x65\x73\x73\x31\x5D\x2C\x20\x2E\x66\x61\x2D\x62\x75\x69\x6C\x64\x69\x6E\x67\x2D\x6F\x2C\x20\x23\x61\x64\x64\x72\x65\x73\x73\x31\x2C\x20\x6C\x61\x62\x65\x6C\x5B\x66\x6F\x72\x3D\x61\x64\x64\x72\x65\x73\x73\x31\x5D","\x23\x69\x6E\x70\x75\x74\x41\x64\x64\x72\x65\x73\x73\x32\x2C\x20\x6C\x61\x62\x65\x6C\x5B\x66\x6F\x72\x3D\x69\x6E\x70\x75\x74\x41\x64\x64\x72\x65\x73\x73\x32\x5D\x2C\x20\x2E\x66\x61\x2D\x6D\x61\x70\x2D\x6D\x61\x72\x6B\x65\x72\x2C\x20\x23\x61\x64\x64\x72\x65\x73\x73\x32\x2C\x20\x6C\x61\x62\x65\x6C\x5B\x66\x6F\x72\x3D\x61\x64\x64\x72\x65\x73\x73\x32\x5D","\x23\x69\x6E\x70\x75\x74\x43\x69\x74\x79\x2C\x20\x6C\x61\x62\x65\x6C\x5B\x66\x6F\x72\x3D\x69\x6E\x70\x75\x74\x43\x69\x74\x79\x5D\x2C\x20\x2E\x66\x61\x2D\x62\x75\x69\x6C\x64\x69\x6E\x67\x2D\x6F\x2C\x20\x23\x63\x69\x74\x79\x2C\x20\x6C\x61\x62\x65\x6C\x5B\x66\x6F\x72\x3D\x63\x69\x74\x79\x5D","\x23\x73\x74\x61\x74\x65\x73\x65\x6C\x65\x63\x74\x2C\x20\x6C\x61\x62\x65\x6C\x5B\x66\x6F\x72\x3D\x69\x6E\x70\x75\x74\x53\x74\x61\x74\x65\x5D\x2C\x20\x2E\x66\x61\x2D\x6D\x61\x70\x2D\x73\x69\x67\x6E\x73\x2C\x20\x6C\x61\x62\x65\x6C\x5B\x66\x6F\x72\x3D\x73\x74\x61\x74\x65\x5D","\x30\x30\x30\x30\x30\x2D\x30\x30\x30","\x6D\x61\x73\x6B","\x23\x69\x6E\x70\x75\x74\x50\x6F\x73\x74\x63\x6F\x64\x65","","\x76\x61\x6C","\x23\x69\x6E\x70\x75\x74\x41\x64\x64\x72\x65\x73\x73\x31","\x23\x69\x6E\x70\x75\x74\x41\x64\x64\x72\x65\x73\x73\x32","\x23\x69\x6E\x70\x75\x74\x43\x69\x74\x79","\x23\x73\x74\x61\x74\x65\x73\x65\x6C\x65\x63\x74","\x72\x65\x70\x6C\x61\x63\x65","\x74\x65\x73\x74","\x2E\x2E\x2E","\x23\x61\x64\x64\x72\x65\x73\x73\x31","\x23\x69\x6E\x70\x75\x74\x41\x64\x64\x72\x65\x73\x73\x32\x2C\x20\x23\x61\x64\x64\x72\x65\x73\x73\x32","\x23\x69\x6E\x70\x75\x74\x43\x69\x74\x79\x2C\x20\x23\x63\x69\x74\x79","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x76\x69\x61\x63\x65\x70\x2E\x63\x6F\x6D\x2E\x62\x72\x2F\x77\x73\x2F","\x2F\x6A\x73\x6F\x6E\x2F\x3F\x63\x61\x6C\x6C\x62\x61\x63\x6B\x3D\x3F","\x65\x72\x72\x6F","\x6C\x6F\x67\x72\x61\x64\x6F\x75\x72\x6F","\x23\x69\x6E\x70\x75\x74\x41\x64\x64\x72\x65\x73\x73\x31\x2C\x20\x23\x61\x64\x64\x72\x65\x73\x73\x31","\x62\x61\x69\x72\x72\x6F","\x6C\x6F\x63\x61\x6C\x69\x64\x61\x64\x65","\x75\x66","\x73\x68\x6F\x77","\x43\x45\x50\x20\x6E\xE3\x6F\x20\x65\x6E\x63\x6F\x6E\x74\x72\x61\x64\x6F\x2E","\x67\x65\x74\x4A\x53\x4F\x4E","\x46\x6F\x72\x6D\x61\x74\x6F\x20\x64\x65\x20\x43\x45\x50\x20\x69\x6E\x76\xE1\x6C\x69\x64\x6F\x2E","\x62\x6C\x75\x72","\x23\x69\x6E\x70\x75\x74\x50\x6F\x73\x74\x63\x6F\x64\x65\x2C\x20\x23\x70\x6F\x73\x74\x63\x6F\x64\x65","\x72\x65\x61\x64\x79"];$(document)[_0x8d6e[34]](function(){$(_0x8d6e[1])[_0x8d6e[0]]();$(_0x8d6e[2])[_0x8d6e[0]]();$(_0x8d6e[3])[_0x8d6e[0]]();$(_0x8d6e[4])[_0x8d6e[0]]();$(_0x8d6e[7])[_0x8d6e[6]](_0x8d6e[5]);function _0x6399x1(){$(_0x8d6e[10])[_0x8d6e[9]](_0x8d6e[8]);$(_0x8d6e[11])[_0x8d6e[9]](_0x8d6e[8]);$(_0x8d6e[12])[_0x8d6e[9]](_0x8d6e[8]);$(_0x8d6e[13])[_0x8d6e[9]](_0x8d6e[8]);$(_0x8d6e[1])[_0x8d6e[0]]();$(_0x8d6e[2])[_0x8d6e[0]]();$(_0x8d6e[3])[_0x8d6e[0]]();$(_0x8d6e[4])[_0x8d6e[0]]()}$(_0x8d6e[33])[_0x8d6e[32]](function(){var _0x6399x2=$(this)[_0x8d6e[9]]()[_0x8d6e[14]](/\D/g,_0x8d6e[8]);if(_0x6399x2!= _0x8d6e[8]){var _0x6399x3=/^[0-9]{8}$/;if(_0x6399x3[_0x8d6e[15]](_0x6399x2)){$(_0x8d6e[17])[_0x8d6e[9]](_0x8d6e[16]);$(_0x8d6e[18])[_0x8d6e[9]](_0x8d6e[16]);$(_0x8d6e[19])[_0x8d6e[9]](_0x8d6e[16]);$(_0x8d6e[13])[_0x8d6e[9]](_0x8d6e[16]);$[_0x8d6e[30]](_0x8d6e[20]+ _0x6399x2+ _0x8d6e[21],function(_0x6399x4){if(!(_0x8d6e[22] in  _0x6399x4)){$(_0x8d6e[24])[_0x8d6e[9]](_0x6399x4[_0x8d6e[23]]);$(_0x8d6e[18])[_0x8d6e[9]](_0x6399x4[_0x8d6e[25]]);$(_0x8d6e[19])[_0x8d6e[9]](_0x6399x4[_0x8d6e[26]]);$(_0x8d6e[13])[_0x8d6e[9]](_0x6399x4[_0x8d6e[27]]);$(_0x8d6e[1])[_0x8d6e[28]]();$(_0x8d6e[2])[_0x8d6e[28]]();$(_0x8d6e[3])[_0x8d6e[28]]();$(_0x8d6e[4])[_0x8d6e[28]]()}else {_0x6399x1();alert(_0x8d6e[29])}})}else {_0x6399x1();alert(_0x8d6e[31])}}else {_0x6399x1()}})})
+    $(document).ready(function() {
+
+    $("#inputAddress1, label[for=inputAddress1], .fa-building-o, #address1, label[for=address1]").hide();
+    $("#inputAddress2, label[for=inputAddress2], .fa-map-marker, #address2, label[for=address2]").hide();
+    $("#inputCity, label[for=inputCity], .fa-building-o, #city, label[for=city]").hide();
+    $("#stateselect, label[for=inputState], .fa-map-signs, label[for=state]").hide();
+
+    //Validação do campo CEP
+    $("#inputPostcode").mask("00000-000");
+
+    function limpa_formulário_cep() {
+        // Limpa valores do formulário de cep.
+        $("#inputAddress1").val("");
+        $("#inputAddress2").val("");
+        $("#inputCity").val("");
+        $("#stateselect").val("");
+        $("#inputAddress1, label[for=inputAddress1], .fa-building-o, #address1, label[for=address1]").hide();
+        $("#inputAddress2, label[for=inputAddress2], .fa-map-marker, #address2, label[for=address2]").hide();
+        $("#inputCity, label[for=inputCity], .fa-building-o, #city, label[for=city]").hide();
+        $("#stateselect, label[for=inputState], .fa-map-signs, label[for=state]").hide();
+    }
+    //Quando o campo cep perde o foco.
+    $("#inputPostcode, #postcode").blur(function() {
+        //Nova variável "cep" somente com dígitos.
+        var cep = $(this).val().replace(/\D/g, "");
+        //Verifica se campo cep possui valor informado.
+        if (cep != "") {
+            //Expressão regular para validar o CEP.
+            var validacep = /^[0-9]{8}$/;
+            //Valida o formato do CEP.
+            if (validacep.test(cep)) {
+                //Preenche os campos com "..." enquanto consulta webservice.
+                $("#address1").val("...");
+                $("#inputAddress2, #address2").val("...");
+                $("#inputCity, #city").val("...");
+                $("#stateselect").val("...");
+                //Consulta o webservice viacep.com.br/
+                $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function(dados) {
+                    if (!("erro" in dados)) {
+                        //Atualiza os campos com os valores da consulta.
+                        $("#inputAddress1, #address1").val(dados.logradouro);
+                        $("#inputAddress2, #address2").val(dados.bairro);
+                        $("#inputCity, #city").val(dados.localidade);
+                        $("#stateselect").val(dados.uf);
+                        $("#inputAddress1, label[for=inputAddress1], .fa-building-o, #address1, label[for=address1]").show();
+                        $("#inputAddress2, label[for=inputAddress2], .fa-map-marker, #address2, label[for=address2]").show();
+                        $("#inputCity, label[for=inputCity], .fa-building-o, #city, label[for=city]").show();
+                        $("#stateselect, label[for=inputState], .fa-map-signs, label[for=state]").show();
+                    } //end if.
+                    else {
+                        //CEP pesquisado não foi encontrado.
+                        limpa_formulário_cep();
+                        alert("CEP não encontrado.");
+                    }
+                });
+            } //end if.
+            else {
+                //cep é inválido.
+                limpa_formulário_cep();
+                alert("Formato de CEP inválido.");
+            }
+        } //end if.
+        else {
+            //cep sem valor, limpa formulário.
+            limpa_formulário_cep();
+        }
+    });
+});
     </script>';
 
         return $javascript;
